@@ -1,0 +1,20 @@
+{
+"name": "FANBOX delete comments",
+  "version": "1.0.0",
+  "manifest_version": 3,
+  "description": "FANBOXこのコメントを通知欄からまとめて削除",
+  "permissions": [ "debugger", "tabs", "scripting" ],
+  "host_permissions": [
+    "https://www.fanbox.cc/*"
+  ],
+  "background" : {
+    "service_worker": "fanbox-del-comments.js"
+  },
+  "content_scripts": [
+      {
+        "matches": ["https://www.fanbox.cc/notifications*"],
+        "js": ["fanbox-del-comments-ui.js"],
+        "run_at": "document_end"
+      }
+  ]
+}
