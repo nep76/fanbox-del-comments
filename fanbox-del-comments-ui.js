@@ -60,11 +60,11 @@ function sendDeleteComments( notifications )
     delete_anchor.textContent = "対象コメントをすべて削除";
     delete_anchor.href = "#";
     delete_anchor.addEventListener( "click", ( e ) => {
+        e.preventDefault();
         sendDeleteComments( notifications );
     } );
 
     const observer = new MutationObserver( ( mls ) => {
-        
         const controls = document.querySelector( '[class*="BellNotificationList__Header"]' );
         if( ! controls ){
             console.log( "fanbox-del-comments-4notification: BellNotificationList__Header not found" );
@@ -104,7 +104,6 @@ function sendDeleteComments( notifications )
         return;
     }
 
-    //notifications.style.setProperty( "padding-left", "2em" );
     notifications.querySelectorAll( '[class*="styled__NotificationLink"] > [class*="UserIcon__Icon"]:first-child' ).forEach( addCheckbox );
 
     observer.observe( notifications, {
