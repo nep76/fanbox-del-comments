@@ -100,7 +100,6 @@ function sendDeleteComments( notifications )
                 mr.addedNodes.forEach( ( node ) => {
                     if( node.nodeType !== Node.ELEMENT_NODE ) return;
 
-                    /** @type {Element} */
                     const e = node;
 
                     const ntf_body = e.querySelector( '[class*="styled__Body"]' );
