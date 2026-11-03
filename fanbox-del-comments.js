@@ -3,7 +3,8 @@ async function delete_comment( comment )
     const ls_ac = document.querySelectorAll( '[class*="styled__Body"]' );
     if( ls_ac.length === 0 ) return;
 
-    let delete_button = undefined;
+    let delete_button, timeout;
+
     for( const ac of ls_ac ){
         if( ac.children[1].textContent.includes( comment ) ){
             delete_button = ac.children[2].lastChild;
@@ -11,11 +12,12 @@ async function delete_comment( comment )
     }
     if( ! delete_button ) return;
 
-    const modal_confirm = new MutationObserver( ( mls, obs ) => {
+    const modal_confirm = new MutationObserver( ( _mls, obs ) => {
         const modal_buttons_wrapper = document.querySelector( '[class*="CommentDeleteConfirmModal__ButtonWrapper"]' );
         if( modal_buttons_wrapper ){
             modal_buttons_wrapper.lastChild.click();
         }
+        clearTimeout( timeout );
         obs.disconnect();
     } );
 
@@ -26,7 +28,7 @@ async function delete_comment( comment )
 
     delete_button.click();
 
-    setTimeout( () => {
+    timeout = setTimeout( () => {
         modal_confirm.disconnect();
     }, 5000 );
 }
@@ -74,7 +76,7 @@ async function dispatch_delete_comment( list )
     }
 }
 
-chrome.runtime.onMessage.addListener( ( message, sender, sendResponse ) => {
+chrome.runtime.onMessage.addListener( ( message, _sender, sendResponse ) => {
     dispatch_delete_comment( message.data ).then( () => {
         sendResponse( { status: "success" } );
     } );

@@ -17,14 +17,15 @@ function addCheckbox( user_node, body_node )
     checkbox.style.setProperty( "appearance", "checkbox" );
     checkbox.style.setProperty( "display", "block" );
     checkbox.style.setProperty( "width", "revert", "important" );
-    checkbox.style.setProperty( "height", "revert", "important" );
+    checkbox.style.setProperty( "height", "100%", "important" );
     checkbox.style.setProperty( "position", "absolute" );
-    checkbox.style.setProperty( "translate", "-25px 10px" );
+    checkbox.style.setProperty( "translate", "-25px -28px" );
 
     checkbox.addEventListener( "click", ( e ) => {
-        event.stopPropagation();
+        e.stopPropagation();
     } );
 
+    user_node.parentElement.style.setProperty( "position", "relative" );
     user_node.parentElement.style.setProperty( "padding-left", "35px" );
     user_node.parentElement.prepend( checkbox );
 }
@@ -55,20 +56,22 @@ function sendDeleteComments( notifications )
     prog_scr.style.setProperty( "font-size", "3em" );
     document.body.appendChild( prog_scr );
 
-    chrome.runtime.sendMessage( {
-        data: list
-    }, ( r ) => {
-        if( chrome.runtime.lastError ){
-            console.error( "fanbox-del-comments-ui: failed to sendMessage" );
-            return;
-        }
+    chrome.runtime.sendMessage( { data: list }, () => {
+        try{
+            if( chrome.runtime.lastError ){
+                throw new Error( "fanbox-del-comments-ui: failed to sendMessage" );
+            }
 
-        delete_targets.forEach( e => {
-            e.parentElement.style.setProperty( "filter", "grayscale(100%)" );
-            e.parentElement.style.setProperty( "opacity", "0.5" );
-            e.parentElement.removeChild( e );
-        } );
-        document.body.removeChild( prog_scr );
+            delete_targets.forEach( e => {
+                e.parentElement.style.setProperty( "filter", "grayscale(100%)" );
+                e.parentElement.style.setProperty( "opacity", "0.5" );
+                e.parentElement.removeChild( e );
+            } );
+        } catch( e ){
+            console.error( e );
+        } finally{
+            document.body.removeChild( prog_scr );
+        }
     } );
 }
 
@@ -102,10 +105,7 @@ function sendDeleteComments( notifications )
 
                     const ntf_body = e.querySelector( '[class*="styled__Body"]' );
                     if( ntf_body ){
-                        let ntf_user = e.querySelector( '[class*="UserIcon__Icon"]' );
-                        if( ! ntf_user ){
-                            ntf_user = e.querySelector( '[class*="UserIcon__NoIcon"]' );
-                        }
+                        const ntf_user = e.querySelector( '[class*="UserIcon__Icon"]', '[class*="UserIcon__NoIcon"]' );
                         if( ntf_user ){
                             addCheckbox( ntf_user, ntf_body );
                         }
