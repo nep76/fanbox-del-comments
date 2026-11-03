@@ -19,7 +19,7 @@ function addCheckbox( user_node, body_node )
     checkbox.style.setProperty( "width", "revert", "important" );
     checkbox.style.setProperty( "height", "100%", "important" );
     checkbox.style.setProperty( "position", "absolute" );
-    checkbox.style.setProperty( "translate", "-25px -28px" );
+    checkbox.style.setProperty( "translate", "-25px -12px" );
 
     checkbox.addEventListener( "click", ( e ) => {
         e.stopPropagation();
@@ -83,6 +83,8 @@ function sendDeleteComments( notifications )
         e.preventDefault();
         sendDeleteComments( notifications );
     } );
+
+    delete_anchor.style.color = "#0096fa";
 
     const observer = new MutationObserver( ( mls ) => {
         const controls = document.querySelector( '[class*="BellNotificationList__Header"]' );
